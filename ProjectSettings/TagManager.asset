@@ -5,6 +5,10 @@ TagManager:
   serializedVersion: 3
   tags:
   - Ground
+  - Forest
+  - Kingdom
+  - Frozen
+  - Temple
   layers:
   - Default
   - TransparentFX
@@ -44,6 +48,9 @@ TagManager:
     locked: 0
   - name: Effects
     uniqueID: 1177723777
+    locked: 0
+  - name: Front
+    uniqueID: 1037520803
     locked: 0
   m_RenderingLayers:
   - Default
