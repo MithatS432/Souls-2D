@@ -3116,7 +3116,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1803872495}
   - component: {fileID: 1803872496}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Limit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3762,8 +3762,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa8574b9bfc71d54381ef9d39d77875d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pauseButton: {fileID: 609940677}
+  resumeButton: {fileID: 1012753218}
+  exitButton: {fileID: 393315807}
   isAlive: 1
-  moveSpeed: 10
+  moveSpeed: 7
+  runSpeed: 15
   jumpForce: 7
   isGrounded: 0
 --- !u!1 &2098750021
