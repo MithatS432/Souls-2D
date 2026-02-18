@@ -9,6 +9,7 @@ TagManager:
   - Kingdom
   - Frozen
   - Temple
+  - Checkpoint
   layers:
   - Default
   - TransparentFX
