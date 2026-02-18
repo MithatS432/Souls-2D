@@ -13,6 +13,11 @@ public class CharacterMovement : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private AudioSource audioSource;
 
+    [Header("Passing References")]
+    public Transform templeArea;
+    public Transform forestArea;
+
+
     [Header("Game UI")]
     [SerializeField] private Button pauseButton;
     [SerializeField] private Button resumeButton;
@@ -116,6 +121,18 @@ public class CharacterMovement : MonoBehaviour
         if (other.gameObject.CompareTag("Ground"))
         {
             isGrounded = false;
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("Forest"))
+        {
+            transform.position = forestArea.transform.position;
+        }
+        if (other.gameObject.CompareTag("Temple"))
+        {
+            transform.position = templeArea.transform.position;
         }
     }
 }
