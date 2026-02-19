@@ -292,23 +292,37 @@ public class CharacterMovement : MonoBehaviour
 
     void ActivateParallax(string area)
     {
-        forestParallaxRoot.SetActive(false);
-        kingdomParallaxRoot.SetActive(false);
-        frozenParallaxRoot.SetActive(false);
+        DetachParallax(forestParallaxRoot);
+        DetachParallax(kingdomParallaxRoot);
+        DetachParallax(frozenParallaxRoot);
 
         switch (area)
         {
             case "Forest":
-                forestParallaxRoot.SetActive(true);
+                AttachParallax(forestParallaxRoot);
                 break;
             case "Kingdom":
-                kingdomParallaxRoot.SetActive(true);
+                AttachParallax(kingdomParallaxRoot);
                 break;
             case "Frozen":
-                frozenParallaxRoot.SetActive(true);
+                AttachParallax(frozenParallaxRoot);
                 break;
         }
     }
+    void AttachParallax(GameObject root)
+    {
+        root.SetActive(true);
+        root.transform.SetParent(transform, true);
+    }
+
+    void DetachParallax(GameObject root)
+    {
+        if (root == null) return;
+
+        root.transform.SetParent(null, true);
+        root.SetActive(false);
+    }
+
 
     IEnumerator FadeAndTeleport(Transform targetArea, string areaName)
     {
