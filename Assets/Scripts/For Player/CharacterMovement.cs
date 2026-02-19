@@ -23,7 +23,8 @@ public class CharacterMovement : MonoBehaviour
     private Rigidbody2D rb;
     private Animator animator;
     private SpriteRenderer spriteRenderer;
-    private AudioSource audioSource;
+    [SerializeField] private AudioSource movementSource;
+    [SerializeField] private AudioSource sfxSource;
 
     [Header("Passing References")]
     public Transform templeArea;
@@ -36,6 +37,9 @@ public class CharacterMovement : MonoBehaviour
     [Header("Music Manager")]
     [SerializeField] private MusicAmbientManager musicManager;
     public AudioClip skillTreeSound;
+    public AudioClip walkSound;
+    public AudioClip runSound;
+    public AudioClip jumpSound;
 
     [Header("Game UI")]
     [SerializeField] private Button pauseButton;
@@ -59,6 +63,11 @@ public class CharacterMovement : MonoBehaviour
     [SerializeField] private float wallSlideSpeed = 2f;
     private bool isTouchingWall;
 
+    [Header("Parallax Roots")]
+    [SerializeField] private GameObject forestParallaxRoot;
+    [SerializeField] private GameObject kingdomParallaxRoot;
+    [SerializeField] private GameObject frozenParallaxRoot;
+
     void Start()
     {
         skillTreeAnimator = skillTreeUI.GetComponent<Animator>();
@@ -67,7 +76,6 @@ public class CharacterMovement : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        audioSource = GetComponent<AudioSource>();
         pauseButton.onClick.AddListener(PauseGame);
         resumeButton.onClick.AddListener(ResumeGame);
         exitButton.onClick.AddListener(ExitGame);
@@ -135,10 +143,12 @@ public class CharacterMovement : MonoBehaviour
 
         if (isGrounded && Input.GetButtonDown("Jump"))
         {
+            sfxSource.PlayOneShot(jumpSound);
             rb.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
             animator.SetTrigger("Jump");
         }
 
+        HandleMovementSound();
     }
     void OpenSkillTree()
     {
@@ -150,7 +160,7 @@ public class CharacterMovement : MonoBehaviour
         skillTreeAnimator.SetBool("IsOpen", true);
 
         Time.timeScale = 0f;
-        audioSource.PlayOneShot(skillTreeSound);
+        sfxSource.PlayOneShot(skillTreeSound);
     }
 
     void CloseSkillTreeImmediate()
@@ -161,7 +171,7 @@ public class CharacterMovement : MonoBehaviour
     IEnumerator CloseRoutine()
     {
         skillTreeAnimator.SetBool("IsOpen", false);
-        audioSource.PlayOneShot(skillTreeSound);
+        sfxSource.PlayOneShot(skillTreeSound);
 
         yield return new WaitForSecondsRealtime(skillTreeAnimLength);
 
@@ -170,6 +180,34 @@ public class CharacterMovement : MonoBehaviour
 
         Time.timeScale = 1f;
         currentState = GameState.Gameplay;
+    }
+    void HandleMovementSound()
+    {
+        bool isMoving = Mathf.Abs(x) > 0.1f;
+
+        if (currentState != GameState.Gameplay)
+        {
+            if (movementSource.isPlaying)
+                movementSource.Stop();
+            return;
+        }
+
+        if (isGrounded && isMoving)
+        {
+            AudioClip targetClip = (currentSpeed == runSpeed) ? runSound : walkSound;
+
+            if (movementSource.clip != targetClip)
+            {
+                movementSource.clip = targetClip;
+                movementSource.pitch = Random.Range(0.95f, 1.05f);
+                movementSource.Play();
+            }
+        }
+        else
+        {
+            if (movementSource.isPlaying)
+                movementSource.Stop();
+        }
     }
 
 
@@ -252,6 +290,25 @@ public class CharacterMovement : MonoBehaviour
         }
     }
 
+    void ActivateParallax(string area)
+    {
+        forestParallaxRoot.SetActive(false);
+        kingdomParallaxRoot.SetActive(false);
+        frozenParallaxRoot.SetActive(false);
+
+        switch (area)
+        {
+            case "Forest":
+                forestParallaxRoot.SetActive(true);
+                break;
+            case "Kingdom":
+                kingdomParallaxRoot.SetActive(true);
+                break;
+            case "Frozen":
+                frozenParallaxRoot.SetActive(true);
+                break;
+        }
+    }
 
     IEnumerator FadeAndTeleport(Transform targetArea, string areaName)
     {
@@ -271,6 +328,7 @@ public class CharacterMovement : MonoBehaviour
         yield return StartCoroutine(Fade(1f));
 
         transform.position = targetArea.position;
+        ActivateParallax(areaName);
 
         if (musicManager != null)
             musicManager.ChangeAreaMusic(areaName);
