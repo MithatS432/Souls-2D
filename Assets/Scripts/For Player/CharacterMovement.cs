@@ -79,6 +79,9 @@ public class CharacterMovement : MonoBehaviour
         pauseButton.onClick.AddListener(PauseGame);
         resumeButton.onClick.AddListener(ResumeGame);
         exitButton.onClick.AddListener(ExitGame);
+        forestParallaxRoot.SetActive(false);
+        kingdomParallaxRoot.SetActive(false);
+        frozenParallaxRoot.SetActive(false);
     }
 
     void PauseGame()
@@ -292,37 +295,23 @@ public class CharacterMovement : MonoBehaviour
 
     void ActivateParallax(string area)
     {
-        DetachParallax(forestParallaxRoot);
-        DetachParallax(kingdomParallaxRoot);
-        DetachParallax(frozenParallaxRoot);
+        forestParallaxRoot.SetActive(area == "Forest");
+        kingdomParallaxRoot.SetActive(area == "Kingdom");
+        frozenParallaxRoot.SetActive(area == "Frozen");
 
-        switch (area)
-        {
-            case "Forest":
-                AttachParallax(forestParallaxRoot);
-                break;
-            case "Kingdom":
-                AttachParallax(kingdomParallaxRoot);
-                break;
-            case "Frozen":
-                AttachParallax(frozenParallaxRoot);
-                break;
-        }
+        ResetParallaxPosition(area);
     }
-    void AttachParallax(GameObject root)
+    void ResetParallaxPosition(string area)
     {
-        root.SetActive(true);
-        root.transform.SetParent(transform, true);
+        if (area == "Forest")
+            forestParallaxRoot.transform.position = forestArea.position;
+
+        if (area == "Kingdom")
+            kingdomParallaxRoot.transform.position = kingdomArea.position;
+
+        if (area == "Frozen")
+            frozenParallaxRoot.transform.position = frozenArea.position;
     }
-
-    void DetachParallax(GameObject root)
-    {
-        if (root == null) return;
-
-        root.transform.SetParent(null, true);
-        root.SetActive(false);
-    }
-
 
     IEnumerator FadeAndTeleport(Transform targetArea, string areaName)
     {
