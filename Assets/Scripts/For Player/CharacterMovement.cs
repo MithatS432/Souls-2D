@@ -63,10 +63,16 @@ public class CharacterMovement : MonoBehaviour
     [SerializeField] private float wallSlideSpeed = 2f;
     private bool isTouchingWall;
 
+    [SerializeField] private int maxCombo = 2;
+    private int currentComboIndex = 0;
+    private bool canQueueNextAttack = false;
+
+
     [Header("Parallax Roots")]
     [SerializeField] private GameObject forestParallaxRoot;
     [SerializeField] private GameObject kingdomParallaxRoot;
     [SerializeField] private GameObject frozenParallaxRoot;
+    [SerializeField] private float backgroundYOffset = -2f;
 
     void Start()
     {
@@ -149,6 +155,11 @@ public class CharacterMovement : MonoBehaviour
             sfxSource.PlayOneShot(jumpSound);
             rb.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
             animator.SetTrigger("Jump");
+        }
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            HandleAttackInput();
         }
 
         HandleMovementSound();
@@ -257,6 +268,34 @@ public class CharacterMovement : MonoBehaviour
         return leftHit.collider != null || rightHit.collider != null;
     }
 
+    void HandleAttackInput()
+    {
+        if (currentComboIndex == 0)
+        {
+            currentComboIndex = 1;
+            animator.SetInteger("AttackIndex", 1);
+        }
+        else if (canQueueNextAttack && currentComboIndex < maxCombo)
+        {
+            currentComboIndex++;
+            animator.SetInteger("AttackIndex", currentComboIndex);
+            canQueueNextAttack = false;
+        }
+    }
+
+    public void EnableComboWindow()
+    {
+        canQueueNextAttack = true;
+    }
+
+    public void ResetCombo()
+    {
+        currentComboIndex = 0;
+        canQueueNextAttack = false;
+        animator.SetInteger("AttackIndex", 0);
+    }
+
+
     private void OnCollisionEnter2D(Collision2D other)
     {
         if (other.gameObject.CompareTag("Ground"))
@@ -303,14 +342,16 @@ public class CharacterMovement : MonoBehaviour
     }
     void ResetParallaxPosition(string area)
     {
+        Vector3 offset = new Vector3(0, backgroundYOffset, 0);
+
         if (area == "Forest")
-            forestParallaxRoot.transform.position = forestArea.position;
+            forestParallaxRoot.transform.position = forestArea.position + offset;
 
         if (area == "Kingdom")
-            kingdomParallaxRoot.transform.position = kingdomArea.position;
+            kingdomParallaxRoot.transform.position = kingdomArea.position + offset;
 
         if (area == "Frozen")
-            frozenParallaxRoot.transform.position = frozenArea.position;
+            frozenParallaxRoot.transform.position = frozenArea.position + offset;
     }
 
     IEnumerator FadeAndTeleport(Transform targetArea, string areaName)
