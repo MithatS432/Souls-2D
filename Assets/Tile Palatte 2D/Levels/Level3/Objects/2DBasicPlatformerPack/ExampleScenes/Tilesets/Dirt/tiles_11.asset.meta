@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: e3f573f69ed2a5049b35cd7330b0a710
+timeCreated: 1517844467
+licenseType: Store
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 110887
+  packageName: 2D Basic Platformer Pack
+  packageVersion: 1.0
+  assetPath: Assets/2DBasicPlatformerPack/ExampleScenes/Tilesets/Dirt/tiles_11.asset
+  uploadId: 228360

@@ -3,8 +3,8 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
-
-
+using UnityEngine.EventSystems;
+using TMPro;
 
 public class CharacterMovement : MonoBehaviour
 {
@@ -41,6 +41,11 @@ public class CharacterMovement : MonoBehaviour
     public AudioClip runSound;
     public AudioClip jumpSound;
     public AudioClip attackSound;
+    public AudioClip hurtSound;
+    public AudioClip dieSound;
+    public AudioClip collectSoulSound;
+    public AudioClip levelUpSound;
+
 
 
     [Header("Game UI")]
@@ -69,7 +74,19 @@ public class CharacterMovement : MonoBehaviour
     private int currentComboIndex = 0;
     private bool isAttacking = false;
     private bool canCombo = false;
-    private float attackTimer = 0f;
+    private bool comboInputBuffered = false;
+
+    public Image healthBar;
+    public Image xpBar;
+    public TextMeshProUGUI levelText;
+    public TextMeshProUGUI soulCountText;
+    public GameObject diePanel;
+    [SerializeField] private int currentHealth;
+    private int maxHealth = 500;
+    [SerializeField] private int currentXP = 0;
+    private int xpToNextLevel = 200;
+    private int currentLevel = 1;
+    private int soulCount = 0;
 
 
     [Header("Parallax Roots")]
@@ -80,6 +97,7 @@ public class CharacterMovement : MonoBehaviour
 
     void Start()
     {
+        currentHealth = maxHealth;
         skillTreeAnimator = skillTreeUI.GetComponent<Animator>();
         skillTreeUI.SetActive(false);
         currentSpeed = moveSpeed;
@@ -92,6 +110,8 @@ public class CharacterMovement : MonoBehaviour
         forestParallaxRoot.SetActive(false);
         kingdomParallaxRoot.SetActive(false);
         frozenParallaxRoot.SetActive(false);
+        GetDamage(100); // For testing health bar
+        GetXP(50); // For testing XP bar
     }
 
     void PauseGame()
@@ -161,7 +181,7 @@ public class CharacterMovement : MonoBehaviour
             animator.SetTrigger("Jump");
         }
 
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && !IsPointerOverUI())
         {
             HandleAttackInput();
         }
@@ -279,81 +299,53 @@ public class CharacterMovement : MonoBehaviour
         {
             StartAttack(1);
         }
-        else if (canCombo && currentComboIndex < maxCombo)
+        else if (canCombo)
         {
-            currentComboIndex++;
-            animator.SetInteger("ComboIndex", currentComboIndex);
-            animator.SetTrigger("Attack");
-            sfxSource.PlayOneShot(attackSound);
-            canCombo = false;
+            comboInputBuffered = true;
         }
     }
     void StartAttack(int comboIndex)
     {
         isAttacking = true;
         currentComboIndex = comboIndex;
+
         animator.SetInteger("ComboIndex", comboIndex);
-        animator.SetTrigger("Attack");
-        sfxSource.PlayOneShot(attackSound);
-        canCombo = false;
-        attackTimer = 0f;
+
+        comboInputBuffered = false;
     }
 
     void HandleAttackState()
     {
         if (!isAttacking) return;
 
-        attackTimer += Time.deltaTime;
         AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
 
-        if (stateInfo.IsTag("Attack"))
-        {
-            if (stateInfo.normalizedTime >= 0.6f && stateInfo.normalizedTime <= 0.9f)
-            {
-                canCombo = true;
-            }
-            else if (stateInfo.normalizedTime > 0.9f)
-            {
-                canCombo = false;
-            }
+        if (!stateInfo.IsTag("Attack"))
+            return;
 
-            if (stateInfo.normalizedTime >= 1f)
-            {
-                if (currentComboIndex >= maxCombo)
-                {
-                    ResetAttack();
-                }
-                else
-                {
-                    if (!canCombo)
-                    {
-                        StartCoroutine(WaitForCombo());
-                    }
-                }
-            }
+        float normalizedTime = stateInfo.normalizedTime % 1f;
+
+        if (normalizedTime >= 0.6f && normalizedTime <= 0.9f)
+        {
+            canCombo = true;
         }
-        else if (attackTimer > 0.5f)
+        else
         {
-            ResetAttack();
-        }
-    }
-    IEnumerator WaitForCombo()
-    {
-        float waitTime = 0.2f;
-        float elapsed = 0f;
-
-        while (elapsed < waitTime)
-        {
-            if (canCombo)
-                yield break;
-
-            elapsed += Time.deltaTime;
-            yield return null;
+            canCombo = false;
         }
 
-        if (!canCombo)
+        if (normalizedTime >= 0.95f)
         {
-            ResetAttack();
+            if (comboInputBuffered && currentComboIndex < maxCombo)
+            {
+                comboInputBuffered = false;
+                currentComboIndex++;
+                animator.SetInteger("ComboIndex", currentComboIndex);
+            }
+            else
+            {
+                ResetAttack();
+            }
         }
     }
 
@@ -361,15 +353,21 @@ public class CharacterMovement : MonoBehaviour
     {
         isAttacking = false;
         canCombo = false;
+        comboInputBuffered = false;
         currentComboIndex = 0;
         animator.SetInteger("ComboIndex", 0);
-        attackTimer = 0f;
     }
     public void PlayAttackSound()
     {
         sfxSource.PlayOneShot(attackSound);
     }
+    bool IsPointerOverUI()
+    {
+        if (EventSystem.current == null)
+            return false;
 
+        return EventSystem.current.IsPointerOverGameObject();
+    }
 
 
     private void OnCollisionEnter2D(Collision2D other)
@@ -481,4 +479,89 @@ public class CharacterMovement : MonoBehaviour
         fadeImage.color = finalColor;
     }
 
+
+
+
+    public void GetDamage(int amount)
+    {
+        currentHealth -= amount;
+        sfxSource.PlayOneShot(hurtSound);
+        animator.SetTrigger("Hurt");
+        UpdateHealthBarUI();
+    }
+    void UpdateHealthBarUI()
+    {
+        float healthPercent = (float)currentHealth / maxHealth;
+        healthBar.fillAmount = healthPercent;
+    }
+
+
+
+    public void GetXP(int amount)
+    {
+        currentXP += amount;
+        sfxSource.PlayOneShot(collectSoulSound);
+        UpdateXPUI();
+    }
+    void UpdateXPUI()
+    {
+        float xpPercent = (float)currentXP / xpToNextLevel;
+        xpBar.fillAmount = xpPercent;
+        if (currentXP >= xpToNextLevel)
+        {
+            sfxSource.PlayOneShot(levelUpSound);
+            LevelUp();
+            ResetXPBar();
+        }
+    }
+    void LevelUp()
+    {
+        currentLevel++;
+        currentXP = 0;
+        levelText.text = "Level " + currentLevel;
+    }
+    void ResetXPBar()
+    {
+        currentXP = 0;
+        xpBar.fillAmount = 0f;
+        xpToNextLevel += 50;
+    }
+
+
+    public void CollectSoul(int amount)
+    {
+        soulCount += amount;
+        sfxSource.PlayOneShot(collectSoulSound);
+        soulCountText.text = soulCount.ToString();
+    }
+
+
+    void Die()
+    {
+        currentState = GameState.Paused;
+        rb.linearVelocity = Vector2.zero;
+        rb.simulated = false;
+
+        sfxSource.PlayOneShot(dieSound);
+        animator.SetTrigger("Die");
+
+        StartCoroutine(ShowDiePanelAfterAnimation());
+    }
+    IEnumerator ShowDiePanelAfterAnimation()
+    {
+        yield return new WaitForSeconds(1.5f);
+        diePanel.SetActive(true);
+    }
+    public void RestartLevel()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+    public void ExitGameFromDie()
+    {
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif  
+    }
 }

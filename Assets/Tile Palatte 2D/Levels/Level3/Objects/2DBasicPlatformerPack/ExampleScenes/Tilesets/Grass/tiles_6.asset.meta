@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: a8b8a17da7e31b140a0086fb88f53219
+timeCreated: 1517844160
+licenseType: Store
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 110887
+  packageName: 2D Basic Platformer Pack
+  packageVersion: 1.0
+  assetPath: Assets/2DBasicPlatformerPack/ExampleScenes/Tilesets/Grass/tiles_6.asset
+  uploadId: 228360

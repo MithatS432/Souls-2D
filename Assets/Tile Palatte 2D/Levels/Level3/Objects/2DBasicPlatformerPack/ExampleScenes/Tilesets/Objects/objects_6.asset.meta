@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: f3b8ab601f85ad847b0b0c673b87179d
+timeCreated: 1517844742
+licenseType: Store
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 110887
+  packageName: 2D Basic Platformer Pack
+  packageVersion: 1.0
+  assetPath: Assets/2DBasicPlatformerPack/ExampleScenes/Tilesets/Objects/objects_6.asset
+  uploadId: 228360
