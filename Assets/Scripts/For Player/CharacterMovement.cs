@@ -40,6 +40,8 @@ public class CharacterMovement : MonoBehaviour
     public AudioClip walkSound;
     public AudioClip runSound;
     public AudioClip jumpSound;
+    public AudioClip attackSound;
+
 
     [Header("Game UI")]
     [SerializeField] private Button pauseButton;
@@ -65,7 +67,9 @@ public class CharacterMovement : MonoBehaviour
 
     [SerializeField] private int maxCombo = 2;
     private int currentComboIndex = 0;
-    private bool canQueueNextAttack = false;
+    private bool isAttacking = false;
+    private bool canCombo = false;
+    private float attackTimer = 0f;
 
 
     [Header("Parallax Roots")]
@@ -162,6 +166,7 @@ public class CharacterMovement : MonoBehaviour
             HandleAttackInput();
         }
 
+        HandleAttackState();
         HandleMovementSound();
     }
     void OpenSkillTree()
@@ -270,30 +275,101 @@ public class CharacterMovement : MonoBehaviour
 
     void HandleAttackInput()
     {
-        if (currentComboIndex == 0)
+        if (!isAttacking)
         {
-            currentComboIndex = 1;
-            animator.SetInteger("AttackIndex", 1);
+            StartAttack(1);
         }
-        else if (canQueueNextAttack && currentComboIndex < maxCombo)
+        else if (canCombo && currentComboIndex < maxCombo)
         {
             currentComboIndex++;
-            animator.SetInteger("AttackIndex", currentComboIndex);
-            canQueueNextAttack = false;
+            animator.SetInteger("ComboIndex", currentComboIndex);
+            animator.SetTrigger("Attack");
+            sfxSource.PlayOneShot(attackSound);
+            canCombo = false;
+        }
+    }
+    void StartAttack(int comboIndex)
+    {
+        isAttacking = true;
+        currentComboIndex = comboIndex;
+        animator.SetInteger("ComboIndex", comboIndex);
+        animator.SetTrigger("Attack");
+        sfxSource.PlayOneShot(attackSound);
+        canCombo = false;
+        attackTimer = 0f;
+    }
+
+    void HandleAttackState()
+    {
+        if (!isAttacking) return;
+
+        attackTimer += Time.deltaTime;
+        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+
+        if (stateInfo.IsTag("Attack"))
+        {
+            if (stateInfo.normalizedTime >= 0.6f && stateInfo.normalizedTime <= 0.9f)
+            {
+                canCombo = true;
+            }
+            else if (stateInfo.normalizedTime > 0.9f)
+            {
+                canCombo = false;
+            }
+
+            if (stateInfo.normalizedTime >= 1f)
+            {
+                if (currentComboIndex >= maxCombo)
+                {
+                    ResetAttack();
+                }
+                else
+                {
+                    if (!canCombo)
+                    {
+                        StartCoroutine(WaitForCombo());
+                    }
+                }
+            }
+        }
+        else if (attackTimer > 0.5f)
+        {
+            ResetAttack();
+        }
+    }
+    IEnumerator WaitForCombo()
+    {
+        float waitTime = 0.2f;
+        float elapsed = 0f;
+
+        while (elapsed < waitTime)
+        {
+            if (canCombo)
+                yield break;
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        if (!canCombo)
+        {
+            ResetAttack();
         }
     }
 
-    public void EnableComboWindow()
+    void ResetAttack()
     {
-        canQueueNextAttack = true;
+        isAttacking = false;
+        canCombo = false;
+        currentComboIndex = 0;
+        animator.SetInteger("ComboIndex", 0);
+        attackTimer = 0f;
+    }
+    public void PlayAttackSound()
+    {
+        sfxSource.PlayOneShot(attackSound);
     }
 
-    public void ResetCombo()
-    {
-        currentComboIndex = 0;
-        canQueueNextAttack = false;
-        animator.SetInteger("AttackIndex", 0);
-    }
 
 
     private void OnCollisionEnter2D(Collision2D other)
@@ -303,7 +379,6 @@ public class CharacterMovement : MonoBehaviour
             isGrounded = true;
         }
     }
-
     private void OnCollisionExit2D(Collision2D other)
     {
         if (other.gameObject.CompareTag("Ground"))
@@ -311,7 +386,6 @@ public class CharacterMovement : MonoBehaviour
             isGrounded = false;
         }
     }
-
     public void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Forest"))
