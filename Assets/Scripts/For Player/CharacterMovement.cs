@@ -76,6 +76,7 @@ public class CharacterMovement : MonoBehaviour
     private bool canCombo = false;
     private bool comboInputBuffered = false;
 
+    [SerializeField] private bool isAlive = true;
     public Image healthBar;
     public Image xpBar;
     public TextMeshProUGUI levelText;
@@ -87,6 +88,8 @@ public class CharacterMovement : MonoBehaviour
     private int xpToNextLevel = 200;
     private int currentLevel = 1;
     private int soulCount = 0;
+
+
 
 
     [Header("Parallax Roots")]
@@ -110,8 +113,6 @@ public class CharacterMovement : MonoBehaviour
         forestParallaxRoot.SetActive(false);
         kingdomParallaxRoot.SetActive(false);
         frozenParallaxRoot.SetActive(false);
-        GetDamage(100); // For testing health bar
-        GetXP(50); // For testing XP bar
     }
 
     void PauseGame()
@@ -148,6 +149,8 @@ public class CharacterMovement : MonoBehaviour
 
     void Update()
     {
+        if (!isAlive) return;
+
         if (Input.GetKeyDown(KeyCode.Tab) &&
        Time.unscaledTime >= nextTabAllowedTime)
         {
@@ -252,6 +255,8 @@ public class CharacterMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (!isAlive) return;
+
         if (currentState != GameState.Gameplay)
             return;
 
@@ -295,7 +300,7 @@ public class CharacterMovement : MonoBehaviour
 
     void HandleAttackInput()
     {
-        if (!isAttacking)
+        if (!isAlive || !isAttacking)
         {
             StartAttack(1);
         }
@@ -481,13 +486,20 @@ public class CharacterMovement : MonoBehaviour
 
 
 
-
+    #region  Health, XP, Souls, and Death
     public void GetDamage(int amount)
     {
         currentHealth -= amount;
         sfxSource.PlayOneShot(hurtSound);
         animator.SetTrigger("Hurt");
         UpdateHealthBarUI();
+        if (currentHealth <= 0)
+        {
+            currentHealth = 0;
+            isAlive = false;
+            UpdateHealthBarUI();
+            Die();
+        }
     }
     void UpdateHealthBarUI()
     {
@@ -564,4 +576,43 @@ public class CharacterMovement : MonoBehaviour
         Application.Quit();
 #endif  
     }
+    #endregion
+
+
+
+
+
+    #region Skill Panel
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    #endregion
+
+
 }
