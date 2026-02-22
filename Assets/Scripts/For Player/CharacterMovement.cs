@@ -15,9 +15,27 @@ public class CharacterMovement : MonoBehaviour
         SkillTree,
         Transition
     }
-
     private GameState currentState = GameState.Gameplay;
 
+
+    public enum SkillType
+    {
+        Attack,
+        Speed,
+        Jump,
+        DoubleJump,
+        Dash,
+        MagicPower
+    }
+    [System.Serializable]
+    public class SkillData
+    {
+        public SkillType type;
+        public Button button;
+        public int cost;
+        public bool isOneTime;
+        public bool isUnlocked;
+    }
 
     [Header("Component References")]
     private Rigidbody2D rb;
@@ -45,6 +63,8 @@ public class CharacterMovement : MonoBehaviour
     public AudioClip dieSound;
     public AudioClip collectSoulSound;
     public AudioClip levelUpSound;
+    public AudioClip skillUnlockSound;
+    public AudioClip dashSound;
 
 
 
@@ -70,11 +90,13 @@ public class CharacterMovement : MonoBehaviour
     [SerializeField] private float wallSlideSpeed = 2f;
     private bool isTouchingWall;
 
+
     [SerializeField] private int maxCombo = 2;
     private int currentComboIndex = 0;
     private bool isAttacking = false;
     private bool canCombo = false;
     private bool comboInputBuffered = false;
+
 
     [SerializeField] private bool isAlive = true;
     public Image healthBar;
@@ -88,6 +110,20 @@ public class CharacterMovement : MonoBehaviour
     private int xpToNextLevel = 200;
     private int currentLevel = 1;
     private int soulCount = 0;
+
+
+    [SerializeField] private List<SkillData> skills;
+    [SerializeField] private float attackDamage = 15f;
+    [SerializeField] private int maxJumpCount = 1;
+    private int currentJumpCount = 0;
+    bool isDashUnlocked = false;
+    [SerializeField] private float dashSpeed = 10f;
+    private float dashDuration = 0.2f;
+    private float dashCooldown = 1f;
+    private bool isDashing = false;
+    private bool canDash = true;
+    public GameObject dashEffectPrefab;
+    bool isMagicUnlocked = false;
 
 
 
@@ -113,6 +149,15 @@ public class CharacterMovement : MonoBehaviour
         forestParallaxRoot.SetActive(false);
         kingdomParallaxRoot.SetActive(false);
         frozenParallaxRoot.SetActive(false);
+        UpdateHealthBarUI();
+        UpdateXPUI();
+
+        foreach (var skill in skills)
+        {
+            SkillType capturedType = skill.type;
+            skill.button.onClick.AddListener(() => PurchaseSkill(capturedType));
+        }
+        CollectSoul(1000);
     }
 
     void PauseGame()
@@ -177,13 +222,10 @@ public class CharacterMovement : MonoBehaviour
         if (x < 0) spriteRenderer.flipX = true;
         else if (x > 0) spriteRenderer.flipX = false;
 
-        if (isGrounded && Input.GetButtonDown("Jump"))
+        if (Input.GetButtonDown("Jump") && currentJumpCount < maxJumpCount && !isTouchingWall)
         {
-            sfxSource.PlayOneShot(jumpSound);
-            rb.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
-            animator.SetTrigger("Jump");
+            PerformJump();
         }
-
         if (Input.GetMouseButtonDown(0) && !IsPointerOverUI())
         {
             HandleAttackInput();
@@ -191,6 +233,22 @@ public class CharacterMovement : MonoBehaviour
 
         HandleAttackState();
         HandleMovementSound();
+
+
+        if (Input.GetKeyDown(KeyCode.R)
+     && currentState == GameState.Gameplay
+     && isDashUnlocked
+     && canDash
+     && !isDashing)
+        {
+            UseDash();
+        }
+
+        if (Input.GetKeyDown(KeyCode.F) && currentState == GameState.Gameplay && isMagicUnlocked)
+        {
+            UseMagicPower();
+        }
+
     }
     void OpenSkillTree()
     {
@@ -259,6 +317,8 @@ public class CharacterMovement : MonoBehaviour
 
         if (currentState != GameState.Gameplay)
             return;
+
+        if (isDashing) return;
 
         isTouchingWall = IsTouchingWall();
 
@@ -380,6 +440,7 @@ public class CharacterMovement : MonoBehaviour
         if (other.gameObject.CompareTag("Ground"))
         {
             isGrounded = true;
+            currentJumpCount = 0;
         }
     }
     private void OnCollisionExit2D(Collision2D other)
@@ -389,6 +450,17 @@ public class CharacterMovement : MonoBehaviour
             isGrounded = false;
         }
     }
+    void PerformJump()
+    {
+        currentJumpCount++;
+
+        rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
+        rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+
+        sfxSource.PlayOneShot(jumpSound);
+        animator.SetTrigger("Jump");
+    }
+
     public void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Forest"))
@@ -530,6 +602,7 @@ public class CharacterMovement : MonoBehaviour
     {
         currentLevel++;
         currentXP = 0;
+        attackDamage += 0.2f;
         levelText.text = "Level " + currentLevel;
     }
     void ResetXPBar()
@@ -585,34 +658,91 @@ public class CharacterMovement : MonoBehaviour
     #region Skill Panel
 
 
+    public void PurchaseSkill(SkillType type)
+    {
+        SkillData skill = skills.Find(s => s.type == type);
+
+        if (skill == null) return;
+        if (soulCount < skill.cost) return;
+        if (skill.isOneTime && skill.isUnlocked) return;
+
+        soulCount -= skill.cost;
+        soulCountText.text = soulCount.ToString();
+        sfxSource.PlayOneShot(skillUnlockSound);
+
+        ApplySkillEffect(type);
+
+        if (skill.isOneTime)
+        {
+            skill.isUnlocked = true;
+            skill.button.interactable = false;
+        }
+    }
+    void ApplySkillEffect(SkillType type)
+    {
+        switch (type)
+        {
+            case SkillType.Attack:
+                attackDamage += 1f;
+                break;
+
+            case SkillType.Speed:
+                moveSpeed += 0.5f;
+                runSpeed += 0.5f;
+                break;
+
+            case SkillType.Jump:
+                jumpForce += 0.5f;
+                break;
+
+            case SkillType.DoubleJump:
+                maxJumpCount = 2;
+                break;
+
+            case SkillType.Dash:
+                isDashUnlocked = true;
+                break;
+
+            case SkillType.MagicPower:
+                isMagicUnlocked = true;
+                break;
+        }
+    }
+    void UseDash()
+    {
+        Vector2 dashDirection = spriteRenderer.flipX ? Vector2.left : Vector2.right;
+        StartCoroutine(PerformDash(dashDirection));
+    }
+    private IEnumerator PerformDash(Vector2 direction)
+    {
+        isDashing = true;
+        canDash = false;
+
+        float originalGravity = rb.gravityScale;
+        rb.gravityScale = 0f;
+
+        rb.linearVelocity = direction * dashSpeed;
+
+        Quaternion rotation = spriteRenderer.flipX
+    ? Quaternion.Euler(0, 180, 0)
+    : Quaternion.identity;
 
 
+        sfxSource.PlayOneShot(dashSound);
+        GameObject dash = Instantiate(dashEffectPrefab, transform.position, rotation);
+        Destroy(dash, 2.5f);
 
+        yield return new WaitForSeconds(dashDuration);
 
+        rb.gravityScale = originalGravity;
+        isDashing = false;
 
+        yield return new WaitForSeconds(dashCooldown);
+        canDash = true;
+    }
+    void UseMagicPower()
+    {
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    }
     #endregion
-
-
 }
