@@ -2,15 +2,23 @@ using UnityEngine;
 
 public class MagicEffectPrefab : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private Rigidbody2D rb;
+    [SerializeField] private float damage = 30f;
+    private float speed = 20f;
+    void Awake()
     {
-
+        rb = GetComponent<Rigidbody2D>();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Launch(Vector2 direction)
     {
-
+        rb.linearVelocity = direction * speed;
+    }
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("Enemy"))
+        {
+            Destroy(gameObject);
+        }
     }
 }

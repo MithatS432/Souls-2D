@@ -133,8 +133,6 @@ public class CharacterMovement : MonoBehaviour
 
 
 
-
-
     [Header("Parallax Roots")]
     [SerializeField] private GameObject forestParallaxRoot;
     [SerializeField] private GameObject kingdomParallaxRoot;
@@ -164,7 +162,6 @@ public class CharacterMovement : MonoBehaviour
             SkillType capturedType = skill.type;
             skill.button.onClick.AddListener(() => PurchaseSkill(capturedType));
         }
-        CollectSoul(1000);
     }
 
     void PauseGame()
@@ -760,12 +757,17 @@ public class CharacterMovement : MonoBehaviour
         float originalGravity = rb.gravityScale;
         rb.gravityScale = 0f;
 
-        rb.linearVelocity = direction * dashSpeed * 0.7f;
+        Quaternion rotation = spriteRenderer.flipX
+            ? Quaternion.Euler(0, 180, 0)
+            : Quaternion.identity;
 
-        Quaternion rotation = spriteRenderer.flipX ? Quaternion.Euler(0, 180, 0) : Quaternion.identity;
+        GameObject magic = Instantiate(magicProjectilePrefab, transform.position, rotation);
+
+        MagicEffectPrefab magicScript = magic.GetComponent<MagicEffectPrefab>();
+        magicScript.Launch(direction);
 
         sfxSource.PlayOneShot(magicSound);
-        GameObject magic = Instantiate(magicProjectilePrefab, transform.position, rotation);
+
         Destroy(magic, 2.5f);
 
         yield return new WaitForSeconds(magicDuration);
