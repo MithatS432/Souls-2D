@@ -65,6 +65,7 @@ public class CharacterMovement : MonoBehaviour
     public AudioClip levelUpSound;
     public AudioClip skillUnlockSound;
     public AudioClip dashSound;
+    public AudioClip magicSound;
 
 
 
@@ -124,6 +125,12 @@ public class CharacterMovement : MonoBehaviour
     private bool canDash = true;
     public GameObject dashEffectPrefab;
     bool isMagicUnlocked = false;
+    public GameObject magicProjectilePrefab;
+    float magicDuration = 5f;
+    float magicCoolDown = 2f;
+    private bool isUsingMagic = false;
+    private bool canUseMagic = true;
+
 
 
 
@@ -244,7 +251,7 @@ public class CharacterMovement : MonoBehaviour
             UseDash();
         }
 
-        if (Input.GetKeyDown(KeyCode.F) && currentState == GameState.Gameplay && isMagicUnlocked)
+        if (Input.GetKeyDown(KeyCode.F) && currentState == GameState.Gameplay && isMagicUnlocked && canUseMagic && !isUsingMagic)
         {
             UseMagicPower();
         }
@@ -742,7 +749,32 @@ public class CharacterMovement : MonoBehaviour
     }
     void UseMagicPower()
     {
-
+        Vector2 dashDirection = spriteRenderer.flipX ? Vector2.left : Vector2.right;
+        StartCoroutine(PerformMagic(dashDirection));
     }
-    #endregion
+    IEnumerator PerformMagic(Vector2 direction)
+    {
+        isUsingMagic = true;
+        canUseMagic = false;
+
+        float originalGravity = rb.gravityScale;
+        rb.gravityScale = 0f;
+
+        rb.linearVelocity = direction * dashSpeed * 0.7f;
+
+        Quaternion rotation = spriteRenderer.flipX ? Quaternion.Euler(0, 180, 0) : Quaternion.identity;
+
+        sfxSource.PlayOneShot(magicSound);
+        GameObject magic = Instantiate(magicProjectilePrefab, transform.position, rotation);
+        Destroy(magic, 2.5f);
+
+        yield return new WaitForSeconds(magicDuration);
+
+        rb.gravityScale = originalGravity;
+        isUsingMagic = false;
+
+        yield return new WaitForSeconds(magicCoolDown);
+        canUseMagic = true;
+    }
 }
+    #endregion
