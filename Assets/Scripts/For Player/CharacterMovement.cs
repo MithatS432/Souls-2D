@@ -37,6 +37,16 @@ public class CharacterMovement : MonoBehaviour
         public bool isUnlocked;
     }
 
+
+    private enum HappinessState
+    {
+        Happy,
+        Normal,
+        Sad
+    }
+
+    private HappinessState currentHappiness;
+
     [Header("Component References")]
     private Rigidbody2D rb;
     private Animator animator;
@@ -66,6 +76,7 @@ public class CharacterMovement : MonoBehaviour
     public AudioClip skillUnlockSound;
     public AudioClip dashSound;
     public AudioClip magicSound;
+    public AudioClip changeHappinessLevelSound;
 
 
 
@@ -79,12 +90,21 @@ public class CharacterMovement : MonoBehaviour
     [SerializeField] private float tabCooldown = 1f;
     private float nextTabAllowedTime = 0f;
 
+    [SerializeField] private Sprite[] happinessLevels;
+    [SerializeField] private Image happinessImage;
+    private float baseJumpForce;
+    private float baseMoveSpeed;
+    private float baseAttackDamage;
+
+
+
     [Header("Player Stats")]
     [SerializeField] private float moveSpeed = 5f;
     public float runSpeed = 10f;
     private float currentSpeed;
     [SerializeField] private float jumpForce = 10f;
     public bool isGrounded;
+    private int wallLayerMask;
     private float x;
     [SerializeField] float fallMultiplier = 2.5f;
     [SerializeField] float lowJumpMultiplier = 2f;
@@ -141,6 +161,10 @@ public class CharacterMovement : MonoBehaviour
 
     void Start()
     {
+        baseJumpForce = jumpForce;
+        baseMoveSpeed = moveSpeed;
+        baseAttackDamage = attackDamage;
+        wallLayerMask = LayerMask.GetMask("Wall");
         currentHealth = maxHealth;
         skillTreeAnimator = skillTreeUI.GetComponent<Animator>();
         skillTreeUI.SetActive(false);
@@ -162,6 +186,7 @@ public class CharacterMovement : MonoBehaviour
             SkillType capturedType = skill.type;
             skill.button.onClick.AddListener(() => PurchaseSkill(capturedType));
         }
+        UpdateHappinessState();
     }
 
     void PauseGame()
@@ -252,7 +277,6 @@ public class CharacterMovement : MonoBehaviour
         {
             UseMagicPower();
         }
-
     }
     void OpenSkillTree()
     {
@@ -324,7 +348,10 @@ public class CharacterMovement : MonoBehaviour
 
         if (isDashing) return;
 
-        isTouchingWall = IsTouchingWall();
+        if (!isGrounded)
+            isTouchingWall = IsTouchingWall();
+        else
+            isTouchingWall = false;
 
         float targetX = x * currentSpeed;
 
@@ -353,13 +380,13 @@ public class CharacterMovement : MonoBehaviour
 
     bool IsTouchingWall()
     {
-        Vector2 origin = transform.position;
+        Vector2 origin = GetComponent<Collider2D>().bounds.center;
         float distance = 0.6f;
 
-        RaycastHit2D leftHit = Physics2D.Raycast(origin, Vector2.left, distance, LayerMask.GetMask("Wall"));
-        RaycastHit2D rightHit = Physics2D.Raycast(origin, Vector2.right, distance, LayerMask.GetMask("Wall"));
+        bool leftHit = Physics2D.Raycast(origin, Vector2.left, distance, wallLayerMask);
+        bool rightHit = Physics2D.Raycast(origin, Vector2.right, distance, wallLayerMask);
 
-        return leftHit.collider != null || rightHit.collider != null;
+        return leftHit || rightHit;
     }
 
     void HandleAttackInput()
@@ -526,6 +553,7 @@ public class CharacterMovement : MonoBehaviour
 
         transform.position = targetArea.position;
         ActivateParallax(areaName);
+        ResetHealth();
 
         if (musicManager != null)
             musicManager.ChangeAreaMusic(areaName);
@@ -569,6 +597,7 @@ public class CharacterMovement : MonoBehaviour
         sfxSource.PlayOneShot(hurtSound);
         animator.SetTrigger("Hurt");
         UpdateHealthBarUI();
+        UpdateHappinessState();
         if (currentHealth <= 0)
         {
             currentHealth = 0;
@@ -582,7 +611,16 @@ public class CharacterMovement : MonoBehaviour
         float healthPercent = (float)currentHealth / maxHealth;
         healthBar.fillAmount = healthPercent;
     }
+    void ResetHealth()
+    {
+        currentHealth = maxHealth;
+        isAlive = true;
 
+        rb.simulated = true;
+
+        UpdateHealthBarUI();
+        UpdateHappinessState();
+    }
 
 
     public void GetXP(int amount)
@@ -778,5 +816,58 @@ public class CharacterMovement : MonoBehaviour
         yield return new WaitForSeconds(magicCoolDown);
         canUseMagic = true;
     }
-}
     #endregion
+
+
+    #region  Happiness Level
+    void UpdateHappinessState()
+    {
+        float healthRatio = (float)currentHealth / maxHealth;
+
+        HappinessState newState;
+
+        if (healthRatio >= 0.8f)
+            newState = HappinessState.Happy;
+        else if (healthRatio >= 0.5f)
+            newState = HappinessState.Normal;
+        else
+            newState = HappinessState.Sad;
+
+        if (newState != currentHappiness)
+        {
+            currentHappiness = newState;
+            ApplyHappinessEffects();
+        }
+    }
+    void ApplyHappinessEffects()
+    {
+        switch (currentHappiness)
+        {
+            case HappinessState.Happy:
+                jumpForce = baseJumpForce * 1.2f;
+                moveSpeed = baseMoveSpeed * 1.15f;
+                attackDamage = baseAttackDamage * 1.2f;
+                sfxSource.PlayOneShot(changeHappinessLevelSound);
+                happinessImage.sprite = happinessLevels[0];
+                break;
+
+            case HappinessState.Normal:
+                jumpForce = baseJumpForce;
+                moveSpeed = baseMoveSpeed;
+                attackDamage = baseAttackDamage;
+                sfxSource.PlayOneShot(changeHappinessLevelSound);
+                happinessImage.sprite = happinessLevels[1];
+                break;
+
+            case HappinessState.Sad:
+                jumpForce = baseJumpForce * 0.8f;
+                moveSpeed = baseMoveSpeed * 0.85f;
+                attackDamage = baseAttackDamage * 0.8f;
+                sfxSource.PlayOneShot(changeHappinessLevelSound);
+                happinessImage.sprite = happinessLevels[2];
+                break;
+        }
+    }
+    #endregion
+
+}
