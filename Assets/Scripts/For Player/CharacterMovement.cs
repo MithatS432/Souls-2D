@@ -96,6 +96,8 @@ public class CharacterMovement : MonoBehaviour
     private float baseMoveSpeed;
     private float baseAttackDamage;
 
+    public TextMeshProUGUI enemyCountText;
+    private int enemyCount = 0;
 
 
     [Header("Player Stats")]
@@ -127,6 +129,7 @@ public class CharacterMovement : MonoBehaviour
     public GameObject diePanel;
     [SerializeField] private float currentHealth;
     private float maxHealth = 500;
+    public GameObject hurtEffectPrefab;
     [SerializeField] private int currentXP = 0;
     private int xpToNextLevel = 200;
     private int currentLevel = 1;
@@ -624,6 +627,8 @@ public class CharacterMovement : MonoBehaviour
         currentHealth -= amount;
         sfxSource.PlayOneShot(hurtSound);
         animator.SetTrigger("Hurt");
+        GameObject he = Instantiate(hurtEffectPrefab, transform.position, Quaternion.identity);
+        Destroy(he, 1f);
         UpdateHealthBarUI();
         UpdateHappinessState();
         if (currentHealth <= 0)
@@ -726,6 +731,13 @@ public class CharacterMovement : MonoBehaviour
 #else
         Application.Quit();
 #endif  
+    }
+
+
+    public void EnemyDied()
+    {
+        enemyCount++;
+        enemyCountText.text = enemyCount.ToString();
     }
     #endregion
 
