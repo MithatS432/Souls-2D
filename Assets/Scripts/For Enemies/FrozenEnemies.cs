@@ -1,16 +1,20 @@
 using UnityEngine;
 
-public class FrozenEnemies : MonoBehaviour
+public class FrozenEnemies : MonoBehaviour, IDamageable
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    public float health;
+
     void Start()
     {
-        
+
     }
 
-    // Update is called once per frame
     void Update()
     {
-        
+
+    }
+    public void GetDamage(float damage)
+    {
+        health -= damage;
     }
 }

@@ -125,8 +125,8 @@ public class CharacterMovement : MonoBehaviour
     public TextMeshProUGUI levelText;
     public TextMeshProUGUI soulCountText;
     public GameObject diePanel;
-    [SerializeField] private int currentHealth;
-    private int maxHealth = 500;
+    [SerializeField] private float currentHealth;
+    private float maxHealth = 500;
     [SerializeField] private int currentXP = 0;
     private int xpToNextLevel = 200;
     private int currentLevel = 1;
@@ -135,6 +135,8 @@ public class CharacterMovement : MonoBehaviour
 
     [SerializeField] private List<SkillData> skills;
     [SerializeField] private float attackDamage = 15f;
+    [SerializeField] private PlayerAttackHitbox attackHitbox;
+    [SerializeField] private BoxCollider2D attackCollider;
     [SerializeField] private int maxJumpCount = 1;
     private int currentJumpCount = 0;
     bool isDashUnlocked = false;
@@ -159,8 +161,15 @@ public class CharacterMovement : MonoBehaviour
     [SerializeField] private GameObject frozenParallaxRoot;
     [SerializeField] private float backgroundYOffset = -2f;
 
+
+    [Header("Checkpoint System")]
+    private Vector3 currentCheckpointPosition;
+
+
     void Start()
     {
+        currentCheckpointPosition = transform.position;
+        attackCollider.enabled = false;
         baseJumpForce = jumpForce;
         baseMoveSpeed = moveSpeed;
         baseAttackDamage = attackDamage;
@@ -389,6 +398,7 @@ public class CharacterMovement : MonoBehaviour
         return leftHit || rightHit;
     }
 
+    #region Attack System 
     void HandleAttackInput()
     {
         if (!isAlive || !isAttacking)
@@ -457,6 +467,17 @@ public class CharacterMovement : MonoBehaviour
     {
         sfxSource.PlayOneShot(attackSound);
     }
+    public void EnableAttackCollider()
+    {
+        attackHitbox.SetDamage(attackDamage);
+        attackCollider.enabled = true;
+    }
+
+    public void DisableAttackCollider()
+    {
+        attackCollider.enabled = false;
+    }
+    #endregion
     bool IsPointerOverUI()
     {
         if (EventSystem.current == null)
@@ -496,18 +517,22 @@ public class CharacterMovement : MonoBehaviour
     {
         if (other.CompareTag("Forest"))
         {
+            currentCheckpointPosition = forestArea.position;
             StartCoroutine(FadeAndTeleport(forestArea, "Forest"));
         }
         else if (other.CompareTag("Temple"))
         {
+            currentCheckpointPosition = templeArea.position;
             StartCoroutine(FadeAndTeleport(templeArea, "Temple"));
         }
         else if (other.CompareTag("Kingdom"))
         {
+            currentCheckpointPosition = kingdomArea.position;
             StartCoroutine(FadeAndTeleport(kingdomArea, "Kingdom"));
         }
         else if (other.CompareTag("Frozen"))
         {
+            currentCheckpointPosition = frozenArea.position;
             StartCoroutine(FadeAndTeleport(frozenArea, "Frozen"));
         }
     }
@@ -533,7 +558,10 @@ public class CharacterMovement : MonoBehaviour
         if (area == "Frozen")
             frozenParallaxRoot.transform.position = frozenArea.position + offset;
     }
-
+    public void SetCheckpoint(Vector3 position)
+    {
+        currentCheckpointPosition = position;
+    }
     IEnumerator FadeAndTeleport(Transform targetArea, string areaName)
     {
         if (currentState == GameState.SkillTree)
@@ -591,7 +619,7 @@ public class CharacterMovement : MonoBehaviour
 
 
     #region  Health, XP, Souls, and Death
-    public void GetDamage(int amount)
+    public void GetDamage(float amount)
     {
         currentHealth -= amount;
         sfxSource.PlayOneShot(hurtSound);
@@ -608,7 +636,7 @@ public class CharacterMovement : MonoBehaviour
     }
     void UpdateHealthBarUI()
     {
-        float healthPercent = (float)currentHealth / maxHealth;
+        float healthPercent = currentHealth / maxHealth;
         healthBar.fillAmount = healthPercent;
     }
     void ResetHealth()
@@ -679,9 +707,17 @@ public class CharacterMovement : MonoBehaviour
         yield return new WaitForSeconds(1.5f);
         diePanel.SetActive(true);
     }
-    public void RestartLevel()
+    public void Respawn()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        diePanel.SetActive(false);
+
+        transform.position = currentCheckpointPosition;
+
+        rb.linearVelocity = Vector2.zero;
+        rb.angularVelocity = 0f;
+
+        ResetHealth();
+        currentState = GameState.Gameplay;
     }
     public void ExitGameFromDie()
     {

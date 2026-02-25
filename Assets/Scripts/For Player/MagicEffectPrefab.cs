@@ -16,8 +16,15 @@ public class MagicEffectPrefab : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.CompareTag("Enemy"))
+        if (other.CompareTag("Enemy"))
         {
+            IDamageable damageable = other.GetComponent<IDamageable>();
+
+            if (damageable != null)
+            {
+                damageable.GetDamage(damage);
+            }
+
             Destroy(gameObject);
         }
     }

@@ -1,16 +1,19 @@
 using UnityEngine;
 
-public class ForestEnemies : MonoBehaviour
+public class ForestEnemies : MonoBehaviour, IDamageable
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    public float health;
     void Start()
     {
-        
+
     }
 
-    // Update is called once per frame
     void Update()
     {
-        
+
+    }
+    public void GetDamage(float damage)
+    {
+        health -= damage;
     }
 }
