@@ -11,6 +11,8 @@ TagManager:
   - Temple
   - Checkpoint
   - Enemy
+  - FxTemporaire
+  - Wall
   layers:
   - Default
   - TransparentFX

@@ -622,9 +622,17 @@ public class CharacterMovement : MonoBehaviour
 
 
     #region  Health, XP, Souls, and Death
+    public bool IsAlive()
+    {
+        return isAlive;
+    }
     public void GetDamage(float amount)
     {
         currentHealth -= amount;
+        if (isAttacking)
+        {
+            ResetAttack();
+        }
         sfxSource.PlayOneShot(hurtSound);
         animator.SetTrigger("Hurt");
         GameObject he = Instantiate(hurtEffectPrefab, transform.position, Quaternion.identity);
@@ -659,7 +667,6 @@ public class CharacterMovement : MonoBehaviour
     public void GetXP(int amount)
     {
         currentXP += amount;
-        sfxSource.PlayOneShot(collectSoulSound);
         UpdateXPUI();
     }
     void UpdateXPUI()
