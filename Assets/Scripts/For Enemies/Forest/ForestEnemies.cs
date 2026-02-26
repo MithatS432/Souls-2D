@@ -13,6 +13,7 @@ public class ForestEnemies : MonoBehaviour, IDamageable
     public AudioClip dieSound;
 
     public float health;
+    private bool isDead = false;
     public GameObject hurtEffectPrefab;
     void Start()
     {
@@ -28,12 +29,16 @@ public class ForestEnemies : MonoBehaviour, IDamageable
     }
     public void GetDamage(float damage)
     {
+        if (isDead) return;
+
         health -= damage;
         ea.SetTrigger("Hurt");
 
         if (hurtEffectPrefab != null)
         {
-            GameObject he = Instantiate(hurtEffectPrefab, transform.position, Quaternion.identity);
+
+            Vector3 spawnPos = transform.position + new Vector3(0.5f, 1.5f, 0f);
+            GameObject he = Instantiate(hurtEffectPrefab, spawnPos, Quaternion.identity);
             Destroy(he, 1f);
         }
         if (eas != null && hurtSound != null)
@@ -47,11 +52,20 @@ public class ForestEnemies : MonoBehaviour, IDamageable
 
     void Die()
     {
+        if (isDead) return;
+        isDead = true;
+
         if (ea != null)
             ea.SetTrigger("Die");
-        if (dieSound != null)
+        if (eas != null && dieSound != null)
             eas.PlayOneShot(dieSound);
 
-        Destroy(gameObject, 1.1f);
+        CharacterMovement player = Object.FindFirstObjectByType<CharacterMovement>();
+        if (player != null)
+        {
+            player.EnemyDied();
+        }
+
+        Destroy(gameObject, 0.9f);
     }
 }
