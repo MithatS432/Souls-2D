@@ -67,12 +67,6 @@ public class ForestEnemies : MonoBehaviour, IDamageable
             StopAllActions();
             return;
         }
-        AnimatorStateInfo state = ea.GetCurrentAnimatorStateInfo(0);
-
-        if (!state.IsName("Attack"))
-        {
-            isAttacking = false;
-        }
 
         float distanceToPlayer = Vector2.Distance(transform.position, player.position);
 
@@ -188,21 +182,32 @@ public class ForestEnemies : MonoBehaviour, IDamageable
     }
     void MeleeAttack()
     {
+        if (isAttacking) return;
+
+        isAttacking = true;
+
         if (ea != null)
             ea.SetTrigger("Attack");
 
-        if (eas != null && attaackSound != null)
-            eas.PlayOneShot(attaackSound);
-
-        CharacterMovement playerScript = player.GetComponent<CharacterMovement>();
-        if (playerScript != null)
-        {
-            playerScript.GetDamage(meleeDamage);
-        }
-
         erb.linearVelocity = new Vector2(0, erb.linearVelocity.y);
     }
+    public void DealMeleeDamage()
+    {
+        if (isDead || player == null) return;
 
+        float distance = Vector2.Distance(transform.position, player.position);
+
+        if (distance <= meleeAttackRange)
+        {
+            if (playerScript != null)
+            {
+                playerScript.GetDamage(meleeDamage);
+            }
+
+            if (eas != null && attaackSound != null)
+                eas.PlayOneShot(attaackSound);
+        }
+    }
     void MoveTowardsPlayer()
     {
         if (player == null) return;

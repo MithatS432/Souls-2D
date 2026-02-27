@@ -333,8 +333,8 @@ MonoBehaviour:
   dieSound: {fileID: 8300000, guid: e11a5a019377fbd4c81caa0adcb4c236, type: 3}
   health: 100
   hurtEffectPrefab: {fileID: 9157105887711914197, guid: c4f829cb7dd4b864caf8832ec5b1ee55, type: 3}
-  xp: 20
-  soul: 10
+  xp: 30
+  soul: 15
   combatType: 1
   projectilePrefab: {fileID: 8382950908421309874, guid: a3b204d386461a14bbcd9876d839d742, type: 3}
   firePoint: {fileID: 6607430152415099022}
