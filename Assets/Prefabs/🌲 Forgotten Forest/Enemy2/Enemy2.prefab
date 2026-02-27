@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 3179455460948131187}
   - component: {fileID: 4820900140980914857}
   - component: {fileID: 111844301012658731}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Enemy2
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -393,3 +393,4 @@ MonoBehaviour:
   meleeDamage: 5
   moveSpeed: 2
   stopDistance: 1
+  detectionRange: 11.5

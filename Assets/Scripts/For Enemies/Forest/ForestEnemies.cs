@@ -43,6 +43,10 @@ public class ForestEnemies : MonoBehaviour, IDamageable
     private Transform player;
     private CharacterMovement playerScript;
 
+    [Header("Detection Settings")]
+    public float detectionRange = 7f;
+    private bool playerDetected = false;
+
     void Start()
     {
         erb = GetComponent<Rigidbody2D>();
@@ -70,29 +74,76 @@ public class ForestEnemies : MonoBehaviour, IDamageable
 
         float distanceToPlayer = Vector2.Distance(transform.position, player.position);
 
-        if (player.position.x < transform.position.x)
+        esr.flipX = player.position.x < transform.position.x;
+
+        if (distanceToPlayer <= detectionRange)
         {
-            esr.flipX = true;
+            playerDetected = true;
         }
         else
         {
-            esr.flipX = false;
+            playerDetected = false;
+            StopMovement();
+            return;
         }
 
-        if (combatType == CombatType.Ranged)
+        if (playerDetected)
         {
-            HandleRangedCombat(distanceToPlayer);
-        }
-        else if (combatType == CombatType.Melee)
-        {
-            HandleMeleeCombat(distanceToPlayer);
+            switch (combatType)
+            {
+                case CombatType.Ranged:
+                    if (distanceToPlayer <= rangedAttackRange)
+                    {
+                        if (Time.time >= lastRangedAttackTime + rangedAttackCooldown && !isAttacking)
+                        {
+                            StartRangedAttack();
+                            lastRangedAttackTime = Time.time;
+                        }
+                        else
+                        {
+                            StopMovement();
+                        }
+                    }
+                    else
+                    {
+                        MoveTowardsPlayer();
+                    }
+                    break;
+
+                case CombatType.Melee:
+                    if (distanceToPlayer <= meleeAttackRange)
+                    {
+                        if (Time.time >= lastMeleeAttackTime + meleeAttackCooldown && !isAttacking)
+                        {
+                            MeleeAttack();
+                            lastMeleeAttackTime = Time.time;
+                        }
+                        else
+                        {
+                            StopMovement();
+                        }
+                    }
+                    else if (distanceToPlayer > stopDistance)
+                    {
+                        MoveTowardsPlayer();
+                    }
+                    else
+                    {
+                        StopMovement();
+                    }
+                    break;
+            }
         }
 
         if (ea != null)
         {
-            float currentSpeed = Mathf.Abs(erb.linearVelocity.x);
-            ea.SetFloat("Speed", currentSpeed);
+            ea.SetFloat("Speed", Mathf.Abs(erb.linearVelocity.x));
         }
+    }
+
+    void StopMovement()
+    {
+        erb.linearVelocity = new Vector2(0, erb.linearVelocity.y);
     }
     void StopAllActions()
     {
@@ -266,6 +317,11 @@ public class ForestEnemies : MonoBehaviour, IDamageable
 
     private void OnDrawGizmosSelected()
     {
+        // Detection Range
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(transform.position, detectionRange);
+
+        // Attack Range
         if (combatType == CombatType.Ranged)
         {
             Gizmos.color = Color.red;

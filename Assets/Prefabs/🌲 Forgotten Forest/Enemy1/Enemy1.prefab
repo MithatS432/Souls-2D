@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6607430152415099022}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Firepoint
   m_TagString: Untagged
   m_Icon: {fileID: 4422084297763085224, guid: 0000000000000000d000000000000000, type: 0}
@@ -46,7 +46,7 @@ GameObject:
   - component: {fileID: 2358708045063154785}
   - component: {fileID: 7658316717853913352}
   - component: {fileID: 5140874657019382189}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Enemy1
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -345,3 +345,4 @@ MonoBehaviour:
   meleeDamage: 10
   moveSpeed: 6
   stopDistance: 1
+  detectionRange: 12
