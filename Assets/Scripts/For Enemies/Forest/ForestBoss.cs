@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class ForestBoss : ForestEnemies
 {
-    [Header("Phase Thresholds")]
-    [SerializeField] private float phaseTwoHealthThreshold = 70f;
-    [SerializeField] private float phaseThreeHealthThreshold = 30f;
+    [Header("Phase Thresholds (Percentage of Max Health)")]
+    [SerializeField, Range(0, 100)] private float phaseTwoHealthPercentage = 90f;
+    [SerializeField, Range(0, 100)] private float phaseThreeHealthPercentage = 50f;
 
     [Header("Phase Damage Settings")]
     [SerializeField] private float phaseTwoMeleeDamage = 30f;
@@ -12,10 +12,15 @@ public class ForestBoss : ForestEnemies
 
     private bool phaseTwoActivated = false;
     private bool phaseThreeActivated = false;
+    private float maxHealth;
+
 
     protected override void Start()
     {
         base.Start();
+
+        maxHealth = health;
+
         OnHealthChanged += HandlePhaseLogic;
     }
 
@@ -26,12 +31,18 @@ public class ForestBoss : ForestEnemies
 
     private void HandlePhaseLogic(float currentHealth)
     {
-        if (!phaseTwoActivated && currentHealth <= phaseTwoHealthThreshold)
+        Debug.Log($"Boss Health Changed: {currentHealth} / {maxHealth}");
+
+        // Phase 2
+        float phase2Threshold = (phaseTwoHealthPercentage / 100f) * maxHealth;
+        if (!phaseTwoActivated && currentHealth <= phase2Threshold)
         {
             ActivatePhaseTwo();
         }
 
-        if (!phaseThreeActivated && currentHealth <= phaseThreeHealthThreshold)
+        // Phase 3
+        float phase3Threshold = (phaseThreeHealthPercentage / 100f) * maxHealth;
+        if (!phaseThreeActivated && currentHealth <= phase3Threshold)
         {
             ActivatePhaseThree();
         }
@@ -41,13 +52,13 @@ public class ForestBoss : ForestEnemies
     {
         phaseTwoActivated = true;
         meleeDamage = phaseTwoMeleeDamage;
-        Debug.Log("Forest Boss → Phase 2 Activated (Damage Increased)");
+        Debug.Log($"🔥 PHASE 2 ACTIVATED! Melee Damage: {meleeDamage}");
     }
 
     private void ActivatePhaseThree()
     {
         phaseThreeActivated = true;
         meleeDamage = phaseThreeMeleeDamage;
-        Debug.Log("Forest Boss → Phase 3 Activated (Damage Increased)");
+        Debug.Log($"💀 PHASE 3 ACTIVATED! Melee Damage: {meleeDamage}");
     }
 }

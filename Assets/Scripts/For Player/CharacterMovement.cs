@@ -138,6 +138,7 @@ public class CharacterMovement : MonoBehaviour
 
     [SerializeField] private List<SkillData> skills;
     [SerializeField] private float attackDamage = 15f;
+    public float AttackDamage => attackDamage;
     [SerializeField] private PlayerAttackHitbox attackHitbox;
     [SerializeField] private BoxCollider2D attackCollider;
     [SerializeField] private int maxJumpCount = 1;
@@ -472,7 +473,6 @@ public class CharacterMovement : MonoBehaviour
     }
     public void EnableAttackCollider()
     {
-        attackHitbox.SetDamage(attackDamage);
         attackCollider.enabled = true;
     }
 

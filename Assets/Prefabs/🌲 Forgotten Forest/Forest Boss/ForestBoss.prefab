@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 7993358117459435843}
   - component: {fileID: 4592590849396888641}
   - component: {fileID: 987509995020309079}
-  - component: {fileID: 3142433814525169645}
   - component: {fileID: 6132184003403577859}
   m_Layer: 7
   m_Name: ForestBoss
@@ -285,36 +284,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &3142433814525169645
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4113456459176888726}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 74ea349cdca86724682a82fb93916fa7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  attaackSound: {fileID: 8300000, guid: d47c30dd2475a1840b8003ae6ce9516b, type: 3}
-  hurtSound: {fileID: 8300000, guid: a7b4e28e472926d4ca3da0738beb34fb, type: 3}
-  dieSound: {fileID: 8300000, guid: e11a5a019377fbd4c81caa0adcb4c236, type: 3}
-  health: 180
-  hurtEffectPrefab: {fileID: 8791802859087666345, guid: ae07f2a45f14a82428409cfe410e6002, type: 3}
-  xp: 100
-  soul: 80
-  combatType: 0
-  projectilePrefab: {fileID: 0}
-  firePoint: {fileID: 0}
-  rangedAttackRange: 5
-  rangedAttackCooldown: 2
-  meleeAttackRange: 4.51
-  meleeAttackCooldown: 2
-  meleeDamage: 20
-  moveSpeed: 7
-  stopDistance: 2
-  detectionRange: 20
 --- !u!114 &6132184003403577859
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -327,25 +296,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a346f2b22ad88a849a03cbc604a287d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attaackSound: {fileID: 0}
-  hurtSound: {fileID: 0}
-  dieSound: {fileID: 0}
-  health: 0
-  hurtEffectPrefab: {fileID: 0}
-  xp: 0
-  soul: 0
+  attaackSound: {fileID: 8300000, guid: d47c30dd2475a1840b8003ae6ce9516b, type: 3}
+  hurtSound: {fileID: 8300000, guid: a7b4e28e472926d4ca3da0738beb34fb, type: 3}
+  dieSound: {fileID: 8300000, guid: e11a5a019377fbd4c81caa0adcb4c236, type: 3}
+  health: 200
+  hurtEffectPrefab: {fileID: 2353600328335836179, guid: ceec7516237b4104b94300043ca39784, type: 3}
+  xp: 100
+  soul: 80
   combatType: 0
   projectilePrefab: {fileID: 0}
   firePoint: {fileID: 0}
   rangedAttackRange: 5
   rangedAttackCooldown: 2
-  meleeAttackRange: 1.5
-  meleeAttackCooldown: 1
-  meleeDamage: 10
-  moveSpeed: 2
+  meleeAttackRange: 5.34
+  meleeAttackCooldown: 1.7
+  meleeDamage: 20
+  moveSpeed: 6
   stopDistance: 1
-  detectionRange: 7
-  phaseTwoHealthThreshold: 70
-  phaseThreeHealthThreshold: 30
+  detectionRange: 15.69
+  phaseTwoHealthPercentage: 80
+  phaseThreeHealthPercentage: 40
   phaseTwoMeleeDamage: 30
   phaseThreeMeleeDamage: 50

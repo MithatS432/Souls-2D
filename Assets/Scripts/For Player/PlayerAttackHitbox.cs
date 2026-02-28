@@ -2,20 +2,21 @@ using UnityEngine;
 
 public class PlayerAttackHitbox : MonoBehaviour
 {
-    private float damage;
+    private CharacterMovement player;
 
-    public void SetDamage(float amount)
+    void Awake()
     {
-        damage = amount;
+        player = GetComponentInParent<CharacterMovement>();
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         IDamageable damageable = other.GetComponent<IDamageable>();
-
         if (damageable != null)
         {
-            damageable.GetDamage(damage);
+            float damageToDeal = player.AttackDamage;
+
+            damageable.GetDamage(damageToDeal);
         }
     }
 }
