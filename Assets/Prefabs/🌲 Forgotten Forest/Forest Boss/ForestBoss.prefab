@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 4592590849396888641}
   - component: {fileID: 987509995020309079}
   - component: {fileID: 3142433814525169645}
+  - component: {fileID: 6132184003403577859}
   m_Layer: 7
   m_Name: ForestBoss
   m_TagString: Enemy
@@ -308,9 +309,43 @@ MonoBehaviour:
   firePoint: {fileID: 0}
   rangedAttackRange: 5
   rangedAttackCooldown: 2
-  meleeAttackRange: 5.21
+  meleeAttackRange: 4.51
   meleeAttackCooldown: 2
   meleeDamage: 20
   moveSpeed: 7
   stopDistance: 2
   detectionRange: 20
+--- !u!114 &6132184003403577859
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4113456459176888726}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a346f2b22ad88a849a03cbc604a287d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attaackSound: {fileID: 0}
+  hurtSound: {fileID: 0}
+  dieSound: {fileID: 0}
+  health: 0
+  hurtEffectPrefab: {fileID: 0}
+  xp: 0
+  soul: 0
+  combatType: 0
+  projectilePrefab: {fileID: 0}
+  firePoint: {fileID: 0}
+  rangedAttackRange: 5
+  rangedAttackCooldown: 2
+  meleeAttackRange: 1.5
+  meleeAttackCooldown: 1
+  meleeDamage: 10
+  moveSpeed: 2
+  stopDistance: 1
+  detectionRange: 7
+  phaseTwoHealthThreshold: 70
+  phaseThreeHealthThreshold: 30
+  phaseTwoMeleeDamage: 30
+  phaseThreeMeleeDamage: 50

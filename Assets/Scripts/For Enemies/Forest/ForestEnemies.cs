@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 
 public class ForestEnemies : MonoBehaviour, IDamageable
 {
@@ -17,6 +18,7 @@ public class ForestEnemies : MonoBehaviour, IDamageable
     public int xp;
     public int soul;
 
+    public event Action<float> OnHealthChanged;
     public enum CombatType { Melee, Ranged }
 
     [Header("Combat Type")]
@@ -47,7 +49,7 @@ public class ForestEnemies : MonoBehaviour, IDamageable
     public float detectionRange = 7f;
     private bool playerDetected = false;
 
-    void Start()
+    protected virtual void Start()
     {
         erb = GetComponent<Rigidbody2D>();
         ea = GetComponent<Animator>();
@@ -272,6 +274,7 @@ public class ForestEnemies : MonoBehaviour, IDamageable
         if (isDead) return;
 
         health -= damage;
+        OnHealthChanged?.Invoke(health);
         isAttacking = false;
 
         if (ea != null)
@@ -304,7 +307,7 @@ public class ForestEnemies : MonoBehaviour, IDamageable
         if (eas != null && dieSound != null)
             eas.PlayOneShot(dieSound);
 
-        CharacterMovement player = Object.FindFirstObjectByType<CharacterMovement>();
+        CharacterMovement player = UnityEngine.Object.FindFirstObjectByType<CharacterMovement>();
         if (player != null)
         {
             player.EnemyDied();
