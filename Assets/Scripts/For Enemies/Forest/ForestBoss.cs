@@ -14,16 +14,18 @@ public class ForestBoss : ForestEnemies
     private bool phaseThreeActivated = false;
     private float maxHealth;
 
+    private CharacterMovement playerScript;
 
     protected override void Start()
     {
         base.Start();
 
         maxHealth = health;
-
         OnHealthChanged += HandlePhaseLogic;
-    }
 
+        playerScript = UnityEngine.Object
+            .FindFirstObjectByType<CharacterMovement>();
+    }
     private void OnDestroy()
     {
         OnHealthChanged -= HandlePhaseLogic;
@@ -60,5 +62,14 @@ public class ForestBoss : ForestEnemies
         phaseThreeActivated = true;
         meleeDamage = phaseThreeMeleeDamage;
         Debug.Log($"💀 PHASE 3 ACTIVATED! Melee Damage: {meleeDamage}");
+    }
+    protected override void Die()
+    {
+        base.Die();
+
+        if (playerScript != null)
+        {
+            playerScript.BossDied();
+        }
     }
 }

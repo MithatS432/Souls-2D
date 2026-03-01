@@ -308,7 +308,7 @@ MonoBehaviour:
   firePoint: {fileID: 0}
   rangedAttackRange: 5
   rangedAttackCooldown: 2
-  meleeAttackRange: 5.34
+  meleeAttackRange: 3.88
   meleeAttackCooldown: 1.7
   meleeDamage: 20
   moveSpeed: 6

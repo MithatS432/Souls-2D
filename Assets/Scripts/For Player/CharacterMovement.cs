@@ -99,6 +99,11 @@ public class CharacterMovement : MonoBehaviour
     public TextMeshProUGUI enemyCountText;
     private int enemyCount = 0;
 
+    public TextMeshProUGUI bossCountText;
+    int bossCount = 0;
+    public GameObject winPanel;
+    public bool hasWon = false;
+
 
     [Header("Player Stats")]
     [SerializeField] private float moveSpeed = 5f;
@@ -238,6 +243,8 @@ public class CharacterMovement : MonoBehaviour
     {
         if (!isAlive) return;
 
+        if (hasWon) return;
+
         if (Input.GetKeyDown(KeyCode.Tab) &&
        Time.unscaledTime >= nextTabAllowedTime)
         {
@@ -355,6 +362,8 @@ public class CharacterMovement : MonoBehaviour
     private void FixedUpdate()
     {
         if (!isAlive) return;
+
+        if (hasWon) return;
 
         if (currentState != GameState.Gameplay)
             return;
@@ -745,6 +754,25 @@ public class CharacterMovement : MonoBehaviour
     {
         enemyCount++;
         enemyCountText.text = enemyCount.ToString();
+    }
+
+    public void BossDied()
+    {
+        bossCount++;
+        bossCountText.text = bossCount.ToString();
+        if (bossCount == 3)
+        {
+            hasWon = true;
+            winPanel.SetActive(true);
+        }
+    }
+    public void WinExit()
+    {
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif  
     }
     #endregion
 

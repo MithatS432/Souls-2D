@@ -295,7 +295,7 @@ public class ForestEnemies : MonoBehaviour, IDamageable
         }
     }
 
-    void Die()
+    protected virtual void Die()
     {
         if (isDead) return;
         isDead = true;
