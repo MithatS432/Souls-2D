@@ -156,10 +156,10 @@ TextureImporter:
       name: Archer_Shoot_0
       rect:
         serializedVersion: 2
-        x: 55
-        y: 55
-        width: 74
-        height: 92
+        x: 0
+        y: 0
+        width: 192
+        height: 192
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -178,10 +178,10 @@ TextureImporter:
       name: Archer_Shoot_1
       rect:
         serializedVersion: 2
-        x: 244
-        y: 55
-        width: 75
-        height: 89
+        x: 192
+        y: 0
+        width: 192
+        height: 192
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -200,10 +200,10 @@ TextureImporter:
       name: Archer_Shoot_2
       rect:
         serializedVersion: 2
-        x: 437
-        y: 55
-        width: 70
-        height: 88
+        x: 384
+        y: 0
+        width: 192
+        height: 192
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -222,10 +222,10 @@ TextureImporter:
       name: Archer_Shoot_3
       rect:
         serializedVersion: 2
-        x: 629
-        y: 55
-        width: 79
-        height: 81
+        x: 576
+        y: 0
+        width: 192
+        height: 192
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -244,10 +244,10 @@ TextureImporter:
       name: Archer_Shoot_4
       rect:
         serializedVersion: 2
-        x: 820
-        y: 55
-        width: 81
-        height: 84
+        x: 768
+        y: 0
+        width: 192
+        height: 192
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -266,10 +266,10 @@ TextureImporter:
       name: Archer_Shoot_5
       rect:
         serializedVersion: 2
-        x: 1012
-        y: 55
-        width: 61
-        height: 86
+        x: 960
+        y: 0
+        width: 192
+        height: 192
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -288,10 +288,10 @@ TextureImporter:
       name: Archer_Shoot_6
       rect:
         serializedVersion: 2
-        x: 1063
-        y: 96
-        width: 38
-        height: 39
+        x: 1152
+        y: 0
+        width: 192
+        height: 192
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -310,10 +310,10 @@ TextureImporter:
       name: Archer_Shoot_7
       rect:
         serializedVersion: 2
-        x: 1205
-        y: 55
-        width: 61
-        height: 84
+        x: 1344
+        y: 0
+        width: 192
+        height: 192
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -328,55 +328,11 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
-    - serializedVersion: 2
-      name: Archer_Shoot_8
-      rect:
-        serializedVersion: 2
-        x: 1255
-        y: 79
-        width: 30
-        height: 44
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: a038c3612d14beac0800000000000000
-      internalID: -3824891087949102326
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Archer_Shoot_9
-      rect:
-        serializedVersion: 2
-        x: 1398
-        y: 55
-        width: 75
-        height: 88
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 3b750013dfab0ba90800000000000000
-      internalID: -7300129399355975757
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 970514c3a3ba62a42908e313313ce616
     internalID: 0
     vertices: []
     indices: 
@@ -394,8 +350,6 @@ TextureImporter:
       Archer_Shoot_5: -2689744893154487746
       Archer_Shoot_6: 500622343033487627
       Archer_Shoot_7: 7309834836266252465
-      Archer_Shoot_8: -3824891087949102326
-      Archer_Shoot_9: -7300129399355975757
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
