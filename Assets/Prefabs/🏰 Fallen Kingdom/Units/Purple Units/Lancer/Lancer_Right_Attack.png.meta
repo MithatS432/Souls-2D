@@ -138,12 +138,12 @@ TextureImporter:
       name: Lancer_Right_Attack_0
       rect:
         serializedVersion: 2
-        x: 143
-        y: 121
-        width: 165
-        height: 75
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 144
+        y: 122
+        width: 163
+        height: 73
+      alignment: 9
+      pivot: {x: 2.4445722, y: 0.56928784}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -160,12 +160,12 @@ TextureImporter:
       name: Lancer_Right_Attack_1
       rect:
         serializedVersion: 2
-        x: 463
-        y: 121
-        width: 157
-        height: 75
+        x: 464
+        y: 122
+        width: 169
+        height: 71
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -179,37 +179,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Lancer_Right_Attack_2
-      rect:
-        serializedVersion: 2
-        x: 611
-        y: 141
-        width: 17
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 7a942bff0433e46c0800000000000000
-      internalID: -4157329051755591257
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: Lancer_Right_Attack_3
       rect:
         serializedVersion: 2
-        x: 760
-        y: 121
-        width: 152
-        height: 77
+        x: 761
+        y: 122
+        width: 150
+        height: 75
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -226,7 +204,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: b152fe5a6bc2f634596cb3e8e2ba058f
     internalID: 0
     vertices: []
     indices: 
