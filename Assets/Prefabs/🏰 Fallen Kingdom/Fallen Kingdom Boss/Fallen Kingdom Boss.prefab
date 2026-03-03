@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 4147015295672847091}
   - component: {fileID: 10549917593137679}
   - component: {fileID: 5373383173096110773}
+  - component: {fileID: 1675293716515990724}
   m_Layer: 7
   m_Name: Fallen Kingdom Boss
   m_TagString: Enemy
@@ -274,3 +275,37 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1675293716515990724
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4017944750424049141}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a346f2b22ad88a849a03cbc604a287d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attaackSound: {fileID: 8300000, guid: 61b7cc362e748e24b959eb4be02d88cc, type: 3}
+  hurtSound: {fileID: 8300000, guid: 8e790e4305187834cacf643c8bbb4b02, type: 3}
+  dieSound: {fileID: 8300000, guid: 958408b32ccf3714ea02821877b0870c, type: 3}
+  health: 200
+  hurtEffectPrefab: {fileID: 4062496106243499295, guid: 304da8401b8ea6849b9f5f96f0f6eb57, type: 3}
+  xp: 150
+  soul: 120
+  combatType: 0
+  projectilePrefab: {fileID: 0}
+  firePoint: {fileID: 0}
+  rangedAttackRange: 5
+  rangedAttackCooldown: 2
+  meleeAttackRange: 4.5
+  meleeAttackCooldown: 1.5
+  meleeDamage: 30
+  moveSpeed: 5
+  stopDistance: 1
+  detectionRange: 19.69
+  phaseTwoHealthPercentage: 100
+  phaseThreeHealthPercentage: 50
+  phaseTwoMeleeDamage: 30
+  phaseThreeMeleeDamage: 50

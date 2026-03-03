@@ -286,21 +286,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74ea349cdca86724682a82fb93916fa7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attaackSound: {fileID: 0}
-  hurtSound: {fileID: 0}
-  dieSound: {fileID: 0}
-  health: 0
-  hurtEffectPrefab: {fileID: 0}
-  xp: 0
-  soul: 0
+  attaackSound: {fileID: 8300000, guid: 61b7cc362e748e24b959eb4be02d88cc, type: 3}
+  hurtSound: {fileID: 8300000, guid: 8e790e4305187834cacf643c8bbb4b02, type: 3}
+  dieSound: {fileID: 8300000, guid: 958408b32ccf3714ea02821877b0870c, type: 3}
+  health: 130
+  hurtEffectPrefab: {fileID: 4883173911316470918, guid: cc0fba80a1616124b980b448027b68c9, type: 3}
+  xp: 50
+  soul: 40
   combatType: 0
   projectilePrefab: {fileID: 0}
   firePoint: {fileID: 0}
   rangedAttackRange: 5
   rangedAttackCooldown: 2
-  meleeAttackRange: 1.5
-  meleeAttackCooldown: 1
-  meleeDamage: 10
-  moveSpeed: 2
-  stopDistance: 1
-  detectionRange: 7
+  meleeAttackRange: 3.05
+  meleeAttackCooldown: 2
+  meleeDamage: 25
+  moveSpeed: 7
+  stopDistance: 1.5
+  detectionRange: 15.4
