@@ -45,7 +45,7 @@ GameObject:
   - component: {fileID: 1092377397578172255}
   - component: {fileID: 7500031481104337761}
   - component: {fileID: 7143793391419933689}
-  - component: {fileID: 3981096073957672908}
+  - component: {fileID: -6938497602980150945}
   m_Layer: 7
   m_Name: Enemy2
   m_TagString: Enemy
@@ -307,7 +307,7 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &3981096073957672908
+--- !u!114 &-6938497602980150945
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -316,7 +316,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 5198607660702272894}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 88173a8f2f0fad543ab11d6141466452, type: 3}
+  m_Script: {fileID: 11500000, guid: 74ea349cdca86724682a82fb93916fa7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  attaackSound: {fileID: 8300000, guid: 61b7cc362e748e24b959eb4be02d88cc, type: 3}
+  hurtSound: {fileID: 8300000, guid: 8e790e4305187834cacf643c8bbb4b02, type: 3}
+  dieSound: {fileID: 8300000, guid: 958408b32ccf3714ea02821877b0870c, type: 3}
   health: 70
+  hurtEffectPrefab: {fileID: 4883173911316470918, guid: cc0fba80a1616124b980b448027b68c9, type: 3}
+  xp: 25
+  soul: 30
+  combatType: 1
+  projectilePrefab: {fileID: 7006062751093427638, guid: cffdaac06cea5c44ca5c65b4491541dc, type: 3}
+  firePoint: {fileID: 5051863743133342140}
+  rangedAttackRange: 12
+  rangedAttackCooldown: 2
+  meleeAttackRange: 1.5
+  meleeAttackCooldown: 1
+  meleeDamage: 10
+  moveSpeed: 2
+  stopDistance: 1
+  detectionRange: 12
