@@ -7,7 +7,9 @@ The spirits, once protected by three guardians, have now been shattered, transfo
 Our goal is to kill all enemies, defeat 3 boss enemies, unite all souls, gain experience, and level up.There are a total of 3 types of regions, and each region contains 4 different enemy types.The enemies come in two different types: ranged and melee.
 
 Region 1-->Forest
+
 Region 2-->Fallen Kingdom
+
 Region 3-->Frozen Abbys
 
 With the checkpoint system, when we die, we resume from where we activated it.
