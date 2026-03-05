@@ -4,7 +4,13 @@ Escaping ghosts, surviving and trying to move forward.
 # Game Description
 The spirits, once protected by three guardians, have now been shattered, transforming the three guardians into different forms and inciting them against their own people.It was up to us to gather and unite these souls.
 
-Our goal is to kill all enemies, defeat 3 boss enemies, unite all souls, gain experience, and level up.
+Our goal is to kill all enemies, defeat 3 boss enemies, unite all souls, gain experience, and level up.There are a total of 3 types of regions, and each region contains 4 different enemy types.The enemies come in two different types: ranged and melee.
+
+Region 1-->Forest
+Region 2-->Fallen Kingdom
+Region 3-->Frozen Abbys
+
+With the checkpoint system, when we die, we resume from where we activated it.
 
 # Controller
 To walk, use w, a, s, d or the arrow keys
