@@ -4,6 +4,8 @@ Escaping ghosts, surviving and trying to move forward.
 # Game Description
 The spirits, once protected by three guardians, have now been shattered, transforming the three guardians into different forms and inciting them against their own people.It was up to us to gather and unite these souls.
 
+Our goal is to kill all enemies, defeat 3 boss enemies, unite all souls, gain experience, and level up.
+
 # Controller
 To walk, use w, a, s, d or the arrow keys
 
