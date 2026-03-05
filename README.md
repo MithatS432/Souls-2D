@@ -38,11 +38,19 @@ Magic attack with the F key
 Here are some of the game sprites:
 
 ![1](Assets/Game Images/1.png)
+
 ![2](Assets/Game Images/2.png)
+
 ![3](Assets/Game Images/3.png)
+
 ![4](Assets/Game Images/4.png)
+
 ![5](Assets/Game Images/5.png)
+
 ![6](Assets/Game Images/6.png)
+
 ![7](Assets/Game Images/7.png)
+
 ![8](Assets/Game Images/8.png)
+
 ![9](Assets/Game Images/9.png)
